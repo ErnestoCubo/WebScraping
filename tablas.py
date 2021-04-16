@@ -1,4 +1,4 @@
-import requests
+iimport requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import sqlite3
@@ -32,7 +32,7 @@ from operator import itemgetter
 
 
 
-con = sqlite3.connect('pruebas.db')
+con = sqlite3.connect('equipos.db')
 cursorObj=con.cursor()
 cursorObj.execute('''CREATE TABLE CLASIFICACION (Equipo TEXT, Puntos INT)''')#comentar una vez ejecutado
 cursorObj.execute('''CREATE TABLE PICHICHI (Nombre TEXT, Goles INT)''')#comentar una vez ejecutado
