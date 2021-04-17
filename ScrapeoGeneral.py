@@ -179,6 +179,17 @@ con = sqlite3.connect('equipos.db')
 cursorObj=con.cursor()
 
 
+#borra las tablas si tenian algo
+
+cursorObj.execute('DROP table if exists ASISTENCIAS')
+cursorObj.execute('DROP table if exists CLASIFICACION')
+cursorObj.execute('DROP table if exists FOTOS')
+cursorObj.execute('DROP table if exists GOLEADORES_EQUIPOS')
+cursorObj.execute('DROP table if exists GOLES_ENCAJADOS')
+cursorObj.execute('DROP table if exists NOTICIAS')
+cursorObj.execute('DROP table if exists PICHICHI')
+
+
 try:
     ############FOTOS
     cursorObj.execute('''CREATE TABLE FOTOS(Equipo TEXT, Nombre TEXT, LinkFoto TEXT)''')  # comentar una vez ejecutadi
@@ -196,9 +207,7 @@ try:
     con.commit()  # comentar una vez ejecutado
 
 except:
-    print("lol")
-
-
+    con.commit()
 
 
 
