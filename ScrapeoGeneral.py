@@ -2,6 +2,8 @@ import requests
 import sqlite3
 from bs4 import BeautifulSoup
 import pandas as pd
+from datetime import datetime
+
 
 
 
@@ -142,6 +144,30 @@ nombreEquiposTablas={
 
 
 }
+nombreEquipos = {
+
+    0: "\nA T L E T I C O\n",
+    1: "\nB A R C E L O N A\n",
+    2: "\nR E A L   M A D R I D\n",
+    3: "\nS E V I L L A \n",
+    4: "\nR E A L   S O C I E D A D\n",
+    5: "\nV I L L A R R E A L\n",
+    6: "\nV A L E N C I A\n",
+    7: "\nA T H L E T I C\n",
+    8: "\nB E T I S\n",
+    9: "\nG E T A F E\n",
+    10: "\nG R A N A D A\n",
+    11: "\nC E L T A\n",
+    12: "\nL E V A N T E\n",
+    13: "\nA L A V E S\n",
+    14: "\nO S A S U N A\n",
+    15: "\nE I B A R\n",
+    16: "\nV A L L A D O L I D\n",
+    17: "\nH U E S C A\n",
+    18: "\nC A D I Z\n",
+    19: "\nE L C H E\n"
+
+}
 #Diccionario con los links
 equipos_estadisticasTablas = {
     0: "https://resultados.as.com/resultados/ficha/equipo/atletico/42/2020/estadisticas/primera/",
@@ -166,6 +192,31 @@ equipos_estadisticasTablas = {
     19: "https://resultados.as.com/resultados/ficha/equipo/elche/121/2020/estadisticas/primera/"
 
 }
+urlTeamsLaliga = {
+    0: "atletico-madrid/startseite/verein/13/saison_id/2020",
+    1: "fc-barcelona/startseite/verein/131/saison_id/2020",
+    2: "real-madrid/startseite/verein/418/saison_id/2020",
+    3: "fc-sevilla/startseite/verein/368/saison_id/2020",
+    4: "real-sociedad-san-sebastian/startseite/verein/681/saison_id/2020",
+    5: "fc-villarreal/startseite/verein/1050/saison_id/2020",
+    6: "fc-valencia/startseite/verein/1049/saison_id/2020",
+    7: "athletic-bilbao/startseite/verein/621/saison_id/2020",
+    8: "real-betis-sevilla/startseite/verein/150/saison_id/2020",
+    9: "fc-getafe/startseite/verein/3709/saison_id/2020",
+    10: "fc-granada/startseite/verein/16795/saison_id/2020",
+    11: "celta-vigo/startseite/verein/940/saison_id/2020",
+    12: "ud-levante/startseite/verein/3368/saison_id/2020",
+    13: "deportivo-alaves/startseite/verein/1108/saison_id/2020",
+    14: "ca-osasuna/startseite/verein/331/saison_id/2020",
+    15: "sd-eibar/startseite/verein/1533/saison_id/2020",
+    16: "real-valladolid/startseite/verein/366/saison_id/2020",
+    17: "sd-huesca/startseite/verein/5358/saison_id/2020",
+    18: "cadiz-cf/startseite/verein/2687/saison_id/2020",
+    19: "fc-elche/startseite/verein/1531/saison_id/2020"
+
+}
+
+
 
 
 
@@ -181,29 +232,34 @@ cursorObj=con.cursor()
 
 #borra las tablas si tenian algo
 
-cursorObj.execute('DROP table if exists ASISTENCIAS')
-cursorObj.execute('DROP table if exists CLASIFICACION')
-cursorObj.execute('DROP table if exists FOTOS')
-cursorObj.execute('DROP table if exists GOLEADORES_EQUIPOS')
-cursorObj.execute('DROP table if exists GOLES_ENCAJADOS')
-cursorObj.execute('DROP table if exists NOTICIAS')
-cursorObj.execute('DROP table if exists PICHICHI')
+cursorObj.execute('DROP table if exists api_asistencias')
+cursorObj.execute('DROP table if exists api_clasificacion')
+cursorObj.execute('DROP table if exists api_fotos')
+cursorObj.execute('DROP table if exists api_goleadores_equipos')
+cursorObj.execute('DROP table if exists api_goles_encajados')
+cursorObj.execute('DROP table if exists api_noticias')
+cursorObj.execute('DROP table if exists api_pichichi')
 
 
 try:
     ############FOTOS
-    cursorObj.execute('''CREATE TABLE FOTOS(Equipo TEXT, Nombre TEXT, LinkFoto TEXT)''')  # comentar una vez ejecutadi
+    cursorObj.execute('''CREATE TABLE api_fotos(Equipo TEXT, Nombre TEXT, LinkFoto TEXT,id INT)''')  # comentar una vez ejecutadi
     ############NOTICIAS
     cursorObj.execute(
-        '''CREATE TABLE NOTICIAS(Titulo TEXT, Foto TEXT, Contenido TEXT, Equipo TEXT)''')  # comentar una vez creadas las tablas
+        '''CREATE TABLE api_noticias(Titulo TEXT, Foto TEXT, Contenido TEXT, Equipo TEXT,id INT)''')  # comentar una vez creadas las tablas
     ############TABLAS
-    cursorObj.execute('''CREATE TABLE CLASIFICACION (Equipo TEXT, Puntos INT)''')  # comentar una vez ejecutado
-    cursorObj.execute('''CREATE TABLE PICHICHI (Nombre TEXT, Goles INT)''')  # comentar una vez ejecutado
-    cursorObj.execute('''CREATE TABLE ASISTENCIAS (Nombre TEXT, Asistencias INT)''')  # comentar una vez ejecutado
+    cursorObj.execute('''CREATE TABLE api_clasificacion (Equipo TEXT, Puntos INT,id INT)''')  # comentar una vez ejecutado
+    cursorObj.execute('''CREATE TABLE api_pichichi (Nombre TEXT, Goles INT,id INT)''')  # comentar una vez ejecutado
+    cursorObj.execute('''CREATE TABLE api_asistencias (Nombre TEXT, Asistencias INT,id INT)''')  # comentar una vez ejecutado
     cursorObj.execute(
-        '''CREATE TABLE GOLES_ENCAJADOS (Nombre TEXT, Goles_encajados INT)''')  # comentar una vez ejecutado
+        '''CREATE TABLE api_goles_encajados (Nombre TEXT, Goles_encajados INT,id INT)''')  # comentar una vez ejecutado
     cursorObj.execute(
-        '''CREATE TABLE GOLEADORES_EQUIPOS (Equipo TEXT, Nombre TEXT, Goles INT)''')  # comentar una vez ejecutado
+        '''CREATE TABLE api_goleadores_equipos (Equipo TEXT, Nombre TEXT, Goles INT,id INT)''')  # comentar una vez ejecutado
+    cursorObj.execute(
+        '''CREATE TABLE api_equipos(Equipo TEXT, Jugadores INT, EdadMedia INT, ValorTotal FLOAT, ValorMedio FLOAT, Actualizacion TEXT,id INT)''')
+    cursorObj.execute(
+        '''CREATE TABLE api_jugadores(jugador TEXT, edad INT, pais TEXT, equipos TEXT, dorsal INT, posicion TEXT, precio FLOAT, actualizacion TEXT,id INT)''')
+
     con.commit()  # comentar una vez ejecutado
 
 except:
@@ -217,8 +273,8 @@ def pasarAdbFotos(equipo,jugador,linkfoto):
 
     i=0
     while i < len(equipo):
-        con.execute('''INSERT INTO FOTOS(Equipo,Nombre,LinkFoto) VALUES(?, ?, ?)''',
-                    (str(equipo[i]), str(jugador[i]), str(linkfoto[i])))
+        con.execute('''INSERT INTO api_fotos(Equipo,Nombre,LinkFoto,id) VALUES(?, ?, ?, ?)''',
+                    (str(equipo[i]), str(jugador[i]), str(linkfoto[i]),int(i)))
 
         con.commit()
         i=i+1;
@@ -229,8 +285,8 @@ def pasarAdbNoticias(titulo,foto,contenido,equipo):
 
     i=0
     while i < len(titulo):
-        con.execute('''INSERT INTO NOTICIAS(titulo,Foto,Contenido,Equipo) VALUES(?, ?, ?,?)''',
-                    (str(titulo[i]), str(foto[i]), str(contenido[i]), str(equipo[i])))
+        con.execute('''INSERT INTO api_noticias(titulo,Foto,Contenido,Equipo,id) VALUES(?, ?, ?, ?, ?)''',
+                    (str(titulo[i]), str(foto[i]), str(contenido[i]), str(equipo[i]),int(i)))
 
         con.commit()
         i=i+1;
@@ -243,8 +299,8 @@ def pasar_DB1(columna1, columna2, tabla, nombre_columna1, nombre_columna2):
 
 
     while i < len(columna1):
-        con.execute(f'INSERT INTO {tabla}({nombre_columna1},{nombre_columna2}) VALUES(?, ?)',
-                    (str(columna1[i]), int(columna2[i])))
+        con.execute(f'INSERT INTO {tabla}({nombre_columna1},{nombre_columna2},id) VALUES(?, ?, ?)',
+                    (str(columna1[i]), int(columna2[i]),int(i)))
 
         con.commit()
         i = i + 1;
@@ -256,14 +312,39 @@ def pasar_DB2(equipo, nombre, tabla, columna,nombre_columna):
     i = 0
 
     while i < len(equipo):
-        con.execute(f'INSERT INTO {tabla} (Equipo,Nombre,{nombre_columna}) VALUES(?, ?, ?)',
-                    (str(equipo[i]), str(nombre[i]), int(columna[i])))
+        con.execute(f'INSERT INTO {tabla} (Equipo,Nombre,{nombre_columna},id) VALUES(?, ?, ?, ?)',
+                    (str(equipo[i]), str(nombre[i]), int(columna[i]),int(i)))
 
         con.commit()
         i = i + 1;
 
     print("Informacion migrada a la DB")
 
+def pasarAdbJugadores(players,price,dorsales,paises,edades,posiciones,equipo,actualizacion):
+
+    numero = cursorObj.execute('SELECT COUNT(pais) from api_jugadores')
+    j = cursorObj.fetchone()[0]
+    i=0
+    while i < len(players):
+        con.execute('''INSERT INTO api_jugadores(jugador,edad,pais,equipos,dorsal,posicion,precio,actualizacion,id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                  (players[i], edades[i], paises[i], equipo[i], dorsales[i], posiciones[i], price[i],actualizacion,int(j)))
+        con.commit()
+        i=i+1;
+        j=j+1;
+    print("Informacion migrada a la DB")
+
+def pasarAdbMedias(resultado,num,edad,total,valor,actualizacion,id):
+
+    con.execute('''INSERT INTO api_equipos(Equipo,Jugadores,EdadMedia,ValorTotal,ValorMedio,Actualizacion,id) VALUES(?, ?, ?, ?, ?, ?, ?)''',
+                  (resultado,num,edad,total,valor,actualizacion,id))
+    con.commit()
+
+    print("Informacion migrada a la DB")
+
+
+
+    print("Informacion migrada a la DB")
+#c.close()
 # endregion
 
 # region fotos
@@ -483,7 +564,7 @@ for i in range(len(jugadores)):
 
 
 
-pasar_DB2(equipos,jugadores,"GOLEADORES_EQUIPOS",goles,"Goles")
+pasar_DB2(equipos,jugadores,"api_goleadores_equipos",goles,"Goles")
 
 
 
@@ -521,7 +602,7 @@ for i in range(20):
     print(f'{i+1}-     {equipos[i]}      {ptos[i]}')
 
 
-pasar_DB1(equipos,ptos,"CLASIFICACION","Equipo","Puntos")
+pasar_DB1(equipos,ptos,"api_clasificacion","Equipo","Puntos")
 
 
 
@@ -537,7 +618,7 @@ print("TABLA DE GOLEADORES")
 for i in range(20):
     print(f' {i+1}- {goleadores[i]}  {goles[i]} ')
 
-pasar_DB1(goleadores,goles,"PICHICHI","Nombre","Goles")
+pasar_DB1(goleadores,goles,"api_pichichi","Nombre","Goles")
 
 
 #ASISTENCIAS
@@ -550,7 +631,7 @@ print("TABLA DE ASISTENCIAS")
 for i in range(20):
     print(f' {i+1}- {asistentes[i]}  {asistencias[i]} ')
 
-pasar_DB1(asistentes,asistencias,"ASISTENCIAS","Nombre","Asistencias")
+pasar_DB1(asistentes,asistencias,"api_asistencias","Nombre","Asistencias")
 
 #GOLES ENCAJADOS
 
@@ -564,7 +645,7 @@ for i in range(20):
     print(f' {i+1}- {porteros[i]}  {encajados[i]} ')
 
 
-pasar_DB1(porteros,encajados,"GOLES_ENCAJADOS","Nombre","Goles_encajados")
+pasar_DB1(porteros,encajados,"api_goles_encajados","Nombre","Goles_encajados")
 
 
 
@@ -572,3 +653,255 @@ pasar_DB1(porteros,encajados,"GOLES_ENCAJADOS","Nombre","Goles_encajados")
 
 # endregion
 
+#region jugadores
+
+
+def current_date_format(date):
+    months = ("01", "02", "03", "04", "05", "06","07", "08", "09", "10", "11", "12")
+    day = date.day
+    month = months[date.month - 1]
+    year = date.year
+    messsage = "{}-{}-{}".format(day, month, year)
+
+    return messsage
+
+
+
+def scrapeo(url, players, prices, dorsales, paises, edades, posiciones, equipos):
+    header = {"User-Agent": "Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11"}
+    """"
+    Mapeo de la página para ello se crea priero el 
+    árbol de la página usando los headers originales del navegador
+    """
+    pageTree = requests.get(url, headers=header)
+    pageSoup = BeautifulSoup(pageTree.content, 'html.parser')
+
+    equipo = "local"
+    aux = 0
+    now = datetime.now()
+    actualizacion = current_date_format(now)
+
+    # Cuando la función ha encontrado los objetos que buscamos los añade a la lista de jugadores
+
+    for i in pageSoup.find_all("td", {"itemprop": "athlete"}):
+        players.append(i.text)
+        aux += 1
+        resultado="local"
+
+    for i in pageSoup.find_all("td", {"class": "rechts hauptlink"}):
+        valor=i.text
+
+        if (valor.find("€")==-1):
+            valor2=0
+            prices.append(valor2)
+
+        else:
+            if (valor.find(",") == -1):
+                split = valor.split(" ")
+                valor = split[0]
+                valor2 = float(valor)/1000
+                prices.append(valor2)
+            else:
+                split = valor.split(',')
+                valor = split[0]
+                valor2 = int(valor)
+                prices.append(valor2)
+
+
+
+
+
+    for i in pageSoup.find_all("div", {"class": "rn_nummer"}):
+
+        dorsal=i.text
+
+        if dorsal=="-":
+            dorsal2=0
+            dorsales.append(dorsal2)
+        else:
+            dorsales.append(int(dorsal))
+
+
+
+
+
+    for i in pageSoup.find_all(lambda tag: tag.name == 'td' and tag.get('class') == ['zentriert']):
+        img = i.find('img', alt=True)
+        if img is not None:
+            paises.append(img['alt'])
+
+    for i in pageSoup.find_all(lambda tag: tag.name == 'td' and tag.get('class') == ['zentriert']):
+
+        if (len(i.text) > 3):
+            edad=i.text[12:14]
+            edad2=int(edad)
+            edades.append(edad2)
+
+    for i in pageSoup.find_all(lambda tag: tag.name == 'table' and tag.get('class') == ['inline-table']):
+        lenght = len(i.text)
+        if (i.text[lenght - 7:lenght] == "Portero"):
+            text = i.text[lenght - 7:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 15:lenght] == "Defensa central"):
+            text = i.text[lenght - 15:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 17:lenght] == "Lateral izquierdo"):
+            text = i.text[lenght - 17:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 15:lenght] == "Lateral derecho"):
+            text = i.text[lenght - 15:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 6:lenght] == "Pivote"):
+            text = i.text[lenght - 6:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 11:lenght] == "Mediocentro"):
+            text = i.text[lenght - 11:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 20:lenght] == "Mediocentro ofensivo"):
+            text = i.text[lenght - 20:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 17:lenght] == "Extremo izquierdo"):
+            text = i.text[lenght - 17:lenght]
+            posiciones.append(text)
+        if (i.text[lenght - 15:lenght] == "Extremo derecho"):
+            text = i.text[lenght - 15:lenght]
+            posiciones.append(text)
+        if i.text[lenght - 10:lenght] == "Mediapunta":
+            text = i.text[lenght - 10:lenght]
+            posiciones.append(text)
+        if i.text[lenght - 16:lenght] == "Delantero centro":
+            text = i.text[lenght - 16:lenght]
+            posiciones.append(text)
+        if i.text[lenght - 18:lenght] == "Interior izquierdo":
+            text = i.text[lenght - 18:lenght]
+            posiciones.append(text)
+        if i.text[lenght - 16:lenght] == "Interior derecho":
+            text = i.text[lenght - 16:lenght]
+            posiciones.append(text)
+
+    for i in pageSoup.find_all(lambda tag: tag.name == 'div' and tag.get('class') == ['dataName']):
+        equipo = i.text
+        equipo=equipo.rstrip()
+        resultado=equipo[2:len(equipo)]
+
+    for i in range(aux):
+        equipos.append(resultado)
+
+    d = (
+    {"Players": players, "Dorsal": dorsales, "Valor": prices, "Edad": edades, "Pais": paises, "Posicion": posiciones,
+     "Equipo": equipos, "Actualizacion":actualizacion})
+
+
+    df = pd.DataFrame(data=d)
+
+    print(df)
+
+    pasarAdbJugadores(players,prices,dorsales,paises,edades,posiciones,equipos,actualizacion)
+
+PlayerList = list()
+ValuesList = list()
+DorsalList = list()
+PaisList = list()
+EdadList = list()
+PosicionList = list()
+EquipoList = list()
+
+for clave in urlTeamsLaliga:
+    valor = nombreEquipos[clave]
+    print(valor)
+    scrapeo(urlTransfermark + urlTeamsLaliga[clave], PlayerList, ValuesList, DorsalList, PaisList, EdadList,
+            PosicionList, EquipoList)
+    PlayerList = list()
+    ValuesList = list()
+    DorsalList = list()
+    PaisList = list()
+    EdadList = list()
+    PosicionList = list()
+    EquipoList = list()
+
+#endregion
+
+#region medias
+def scrapeo_medias(url):
+
+    numero = cursorObj.execute('SELECT COUNT(Equipo) from api_equipos')
+    colls = cursorObj.fetchone()[0]
+
+    header = {"User-Agent": "Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11"}
+    """"
+    Mapeo de la página para ello se crea priero el 
+    árbol de la página usando los headers originales del navegador
+    """
+    pageTree = requests.get(url, headers=header)
+    pageSoup = BeautifulSoup(pageTree.content, 'html.parser')
+
+    equipo = "local"
+    resultado="local"
+
+    aux =0
+    now = datetime.now()
+    actualizacion = current_date_format(now)
+    totalValor=0
+    totalEdad=0
+    mediaEdad=0
+    mediaValor=0
+
+    # Cuando la función ha encontrado los objetos que buscamos los añade a la lista de jugadores
+
+
+    for i in pageSoup.find_all("td", {"class": "rechts hauptlink"}):
+        valor=i.text
+
+        if (valor.find("€")==-1):
+            valor2=0
+
+
+        else:
+            if (valor.find(",") == -1):
+                split = valor.split(" ")
+                valor = split[0]
+                valor2 = float(valor)/1000
+                totalValor+=valor2
+
+            else:
+                split = valor.split(',')
+                valor = split[0]
+                valor2 = int(valor)
+                totalValor+=valor2
+        aux+=1;
+
+    mediaValor=totalValor/aux
+
+
+
+
+    for i in pageSoup.find_all(lambda tag: tag.name == 'td' and tag.get('class') == ['zentriert']):
+
+        if (len(i.text) > 3):
+            edad=i.text[12:14]
+            edad2=int(edad)
+            totalEdad+=edad2
+
+    mediaEdad=totalEdad/aux;
+
+
+    for i in pageSoup.find_all(lambda tag: tag.name == 'div' and tag.get('class') == ['dataName']):
+        equipo = i.text
+        equipo = equipo.rstrip()
+        resultado = equipo[2:len(equipo)]
+
+    d = ({"Equipo": resultado,"Jugadores":aux, "Edad media": mediaEdad, "Valor total":totalValor, "Valor medio": mediaValor, "Actualizacion":actualizacion})
+
+    df = pd.DataFrame(data=d, index=[0])
+
+
+    print(df)
+
+    pasarAdbMedias(resultado,aux,mediaEdad,totalValor,mediaValor,actualizacion,colls)
+
+for clave in urlTeamsLaliga:
+
+    scrapeo_medias(urlTransfermark + urlTeamsLaliga[clave])
+
+
+#endregion
