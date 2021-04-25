@@ -1,60 +1,70 @@
 import React from 'react';
 import axios from 'axios';
+import './Home.css';
 
 // Estructura de los datos en React
 export default class FetchEquipo extends React.Component {
     state = {
         loading: true,
-        equipos: []
+        equipos: [],
+        escudos: []
     };
 
     // Inicio de la petición asincrona a la API
     async componentDidMount() {
-        const url = "http://localhost:8000/api/Equipos/?format=json";
+        var url = "http://localhost:8000/api/Equipos/?format=json&search=11-02-2021";
         // Await de la función para esperar a la respuesta asincrona y obtener los datos
-        const response = await axios.get(url);
-        const data = await response.data;
-        // Cambio del estado de los datos porque llegado aquí ya se han recibido
-        this.setState({ equipos: data, loading: false });
+        var response = await axios.get(url);
+        const equiposData = await response.data;
 
+        url = "http://localhost:8000/api/Escudos/?format=json";
+        response = await axios.get(url);
+        const escudosData = await response.data;
+
+        // Cambio del estado de los datos porque llegado aquí ya se han recibido
+        this.setState({ equipos: equiposData, escudos: escudosData, loading: false });
     }
 
     render() {
         // Mostrará un escenario dependiendo de si estan o no cargados los datos
-        if (this.state.loading == true) {
+        if (this.state.loading === true) {
             return (
-                <div>
+                <div className="card-container">
                     <p>Loading...</p>
                 </div>
             );
         }
-        else if (!this.state.equipos.length == null) {
+        else if (!this.state.equipos.length === null) {
             return (
-                <div>
+                <div className="card-container">
                     <p>No se encontraron datos de los equipos</p>
                 </div>
             );
         }
-        else{
+        else {
             // Mapeo del array de equipos por cada uno de los equipos
             const equiposJSx = [];
-            this.state.equipos.forEach(equipo => {
+            for (let index = 0; index < this.state.equipos.length; index++) {
+                console.log(this.state.escudos[0]);
                 equiposJSx.push(
-                    // Componente raíz del grupo al que se le pasa una key unica en este caso ek nombre del equipo
-                    <div class="col-3" key={equipo.Equipo}>
-                        <h1>{equipo.Equipo}</h1>
-                        <h2>Jugadores: {equipo.Jugadores}</h2>
-                        <h2>Edad media: {equipo.EdadMedia}</h2>
-                        <h2>Valor total: {equipo.ValorTotal}</h2>
-                        <h2>Valor Medio: {equipo.ValorMedio}</h2>
+                    <div className='card-container' key={this.state.equipos.Equipo}>
+                        <div className='image-container'>
+                            <img src={this.state.escudos[index].Link}></img>
+                        </div>
+                        <div className='card-content'>
+                            <div className='card-title'>
+                                <h3>{this.state.equipos[index].Equipo}</h3>
+                            </div>
+                        </div>
                     </div>
-                );
-            });
+                )
+
+            }
 
             return (
-                    <div style={{backgroundImage: "../../public/images/fondo.jpeg"}} class="row">
-                        {equiposJSx}
-                    </div>
+                <div className="row">
+                    {equiposJSx}
+                </div>
             );
         }
     }
