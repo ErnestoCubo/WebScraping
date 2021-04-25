@@ -243,7 +243,7 @@ cursorObj.execute('DROP table if exists api_pichichi')
 
 try:
     ############FOTOS
-    cursorObj.execute('''CREATE TABLE api_fotos(Equipo TEXT, Nombre TEXT, LinkFoto TEXT,id INT)''')  # comentar una vez ejecutadi
+    cursorObj.execute('''CREATE TABLE api_fotos(Equipo TEXT, Nombre TEXT, LinkFoto TEXT,id INT,FotoPeque TEXT)''')  # comentar una vez ejecutadi
     ############NOTICIAS
     cursorObj.execute(
         '''CREATE TABLE api_noticias(Titulo TEXT, Foto TEXT, Contenido TEXT, Equipo TEXT,id INT)''')  # comentar una vez creadas las tablas
@@ -268,13 +268,13 @@ except:
 
 
 #PASAR A DB FOTOS
-def pasarAdbFotos(equipo,jugador,linkfoto):
+def pasarAdbFotos(equipo,jugador,linkfoto,linkfoto2):
 
 
     i=0
     while i < len(equipo):
-        con.execute('''INSERT INTO api_fotos(Equipo,Nombre,LinkFoto,id) VALUES(?, ?, ?, ?)''',
-                    (str(equipo[i]), str(jugador[i]), str(linkfoto[i]),int(i)))
+        con.execute('''INSERT INTO api_fotos(Equipo,Nombre,LinkFoto,id,FotoPeque) VALUES(?, ?, ?, ?,?)''',
+                    (str(equipo[i]), str(jugador[i]), str(linkfoto[i]),int(i),str(linkfoto2[i])))
 
         con.commit()
         i=i+1;
@@ -355,11 +355,12 @@ PlayersList = list()
 linklist = list()
 listaFotos = list()
 listaEquipos = list()
+listafotos2=list()
 
 
 #funciones
 
-def scrapeofoto(indice,links,nombres,listafotos):
+def scrapeofoto(indice,links,nombres,listafotos,listafotos2):
 
     url=links[indice]
 
@@ -369,6 +370,7 @@ def scrapeofoto(indice,links,nombres,listafotos):
     pageSoup = BeautifulSoup(pageTree.content, 'html.parser')
 
     fotoscarnet=pageSoup.find_all("div",{"class": "dataBild"})[0].find_all("img")
+    listafotos2.append(fotoscarnet[0]['src'])
 
     try:
         fotos=pageSoup.find_all("div",{"class": "galerie-content"})[0].find_all("img")
@@ -405,11 +407,11 @@ for clave in urlTeamsLaligaFotos:
 
 cont=0
 for i in PlayersList:
-    scrapeofoto(cont, linklist, PlayersList,listaFotos)
+    scrapeofoto(cont, linklist, PlayersList,listaFotos,listafotos2)
     print(i+"--"+listaEquipos[cont]+"---"+listaFotos[cont])
     cont= cont+1
 
-pasarAdbFotos(listaEquipos,PlayersList,listaFotos)
+pasarAdbFotos(listaEquipos,PlayersList,listaFotos,listafotos2)
 
 
 # endregion
