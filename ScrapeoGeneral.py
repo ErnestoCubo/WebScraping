@@ -6,6 +6,13 @@ from datetime import datetime
 
 
 
+#now=datetime.now()#-------------------DESCOMENTAR CUANDO SEA AUTOMATICO
+#if(now.day%5!=0):#-------------------DESCOMENTAR CUANDO SEA AUTOMATICO
+    #exit()#-------------------DESCOMENTAR CUANDO SEA AUTOMATICO
+
+
+
+
 
 # region diccionarios
 
