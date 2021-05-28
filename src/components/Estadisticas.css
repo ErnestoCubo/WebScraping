@@ -10,6 +10,8 @@
 }
 img {
   overflow: hidden;
+  background-blend-mode: multiply;
+
 }
 #clasificacion {
   text-align: center;

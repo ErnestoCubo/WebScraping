@@ -292,7 +292,7 @@ export default class Estadisticas extends React.Component {
             <figure>
               <p>
                 <img
-                  src="https://freepikpsd.com/wp-content/uploads/2019/10/portero-de-futbol-png-1.png"
+                  src="https://i.postimg.cc/SRkdB1Cf/guantes-1.png"
                   height="150px"
                   width="300px"
                   alt="Encajados"
