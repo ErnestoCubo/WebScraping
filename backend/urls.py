@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from api import views
+from django.conf.urls import url
 
 router = routers.DefaultRouter()
 router.register(r'Jugadores', views.JugadorView, 'jugadores')
@@ -33,5 +34,5 @@ router.register(r'Escudos',views.EscudosView,'Escudos')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    
+    url("login/", include("users.urls")),   
 ]
